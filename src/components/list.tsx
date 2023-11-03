@@ -1,3 +1,4 @@
+import { sortAlpabetically } from "../utils";
 import { useQuery } from "react-query";
 import { z } from "zod";
 
@@ -46,13 +47,15 @@ function ListWrapper<T extends z.ZodSchema>({
   if (error) return <Error />;
   if (isLoading) return <Loader />;
 
-  return <ul>{children(data)}</ul>;
+  return <>{children(data)}</>;
 }
 
 function Characters({ data }: { data: z.infer<typeof CharactersListSchema> }) {
+  const sorted = sortAlpabetically(data.results, (d) => d.name);
+
   return (
     <ul>
-      {data.results.map((res) => (
+      {sorted.map((res) => (
         <li key={res.name}>{res.name}</li>
       ))}
     </ul>

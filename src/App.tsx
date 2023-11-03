@@ -32,7 +32,6 @@ export function App() {
               return <List.Characters />;
           }
         })()}
-        <List.Characters />
       </main>
     </>
   );
