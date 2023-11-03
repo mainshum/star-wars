@@ -1,22 +1,13 @@
-import "./App.css";
-import { createRouter } from "@swan-io/chicane";
 import { List } from "./components/list";
-
-function Navbar() {
-  return <div>Nav</div>;
-}
+import { Navbar } from "./components/navbar";
+import { Router as Router } from "./router";
 
 function NotFound() {
   return <div>Not found</div>;
 }
 
-const router = createRouter({
-  Home: "/",
-  Characters: "/characters",
-});
-
 export function App() {
-  const route = router.useRoute(["Characters", "Home"]);
+  const route = Router.useRoute(["Characters", "Home"]);
 
   return (
     <>

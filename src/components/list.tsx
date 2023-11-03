@@ -54,9 +54,11 @@ function Characters({ data }: { data: z.infer<typeof CharactersListSchema> }) {
   const sorted = sortAlpabetically(data.results, (d) => d.name);
 
   return (
-    <ul>
+    <ul className="star-list">
       {sorted.map((res) => (
-        <li key={res.name}>{res.name}</li>
+        <li className="star-list__item" key={res.name}>
+          {res.name}
+        </li>
       ))}
     </ul>
   );
