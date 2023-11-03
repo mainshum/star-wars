@@ -3,11 +3,11 @@ import { useQuery } from "react-query";
 import { z } from "zod";
 
 function Error() {
-  return <div>Error</div>;
+  return <div data-testid="error">Error</div>;
 }
 
 function Loader() {
-  return <div>Loader</div>;
+  return <div data-testid="loader">Loader</div>;
 }
 
 const CharactersListSchema = z.object({
@@ -26,7 +26,12 @@ const PlanetsListSchema = z.object({
   ),
 });
 
-const getJsonList = async (url: string) => fetch(url).then((res) => res.json());
+const getJsonList = async (url: string) => {
+  const res = await fetch(url);
+  if (res.status !== 200) throw Error();
+
+  return await res.json();
+};
 
 function ListWrapper<T extends z.ZodSchema>({
   schema,
@@ -41,8 +46,6 @@ function ListWrapper<T extends z.ZodSchema>({
     queryFn: () => getJsonList(url).then(schema.parse),
     queryKey: [url],
   });
-
-  console.log(data);
 
   if (error) return <Error />;
   if (isLoading) return <Loader />;
