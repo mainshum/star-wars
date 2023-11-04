@@ -2,6 +2,8 @@ import { sortAlpabetically } from "../utils";
 import { useQuery } from "react-query";
 import { z } from "zod";
 import { ErrorBoundary } from "react-error-boundary";
+import React from "react";
+import { useLinkProps } from "@swan-io/chicane";
 
 // we'd normally log it using an external service
 const logError = console.error;
@@ -61,19 +63,32 @@ function ListWrapper<T extends z.ZodSchema>({
   return <>{children(data)}</>;
 }
 
-function Characters({ data }: { data: z.infer<typeof CharactersListSchema> }) {
-  const sorted = sortAlpabetically(data.results, (d) => d.name);
-
+const CharacterLink = ({ name, to }: { name: string; to: string }) => {
+  const { onClick } = useLinkProps({ href: to });
   return (
-    <ul className="star-list">
-      {sorted.map((res) => (
-        <li className="star-list__item" key={res.name}>
-          {res.name}
-        </li>
-      ))}
-    </ul>
+    <a href={to} onClick={onClick}>
+      <li className="star-list__item" key={name}>
+        <img alt={name} src="/character.jpeg" width={300} height={300} />
+        <section className="star-list__info">
+          <div className="star-list__sabre" />
+          <span className="star-list__itemText">{name}</span>
+        </section>
+      </li>
+    </a>
   );
-}
+};
+
+const Characters = ({
+  data,
+}: {
+  data: z.infer<typeof CharactersListSchema>;
+}) => (
+  <ul className="star-list">
+    {sortAlpabetically(data.results, (d) => d.name).map((res) => (
+      <CharacterLink key={res.name} name={res.name} to={"/"} />
+    ))}
+  </ul>
+);
 
 function Planets({ data }: { data: z.infer<typeof PlanetsListSchema> }) {
   return (

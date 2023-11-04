@@ -1,8 +1,9 @@
 html {
   box-sizing: border-box;
   font-size: 16px;
-  --charcoal: #323133;
-  --grey: #b3b3b3;
+  --black: rgb(0, 0, 0);
+  --charcoal: rgb(29, 30, 31);
+  --white: rgb(248, 248, 248);
 }
 
 *,
@@ -37,7 +38,7 @@ img {
 }
 
 #root {
-  background: var(--charcoal);
+  background: var(--black);
   display: grid;
   grid-template-columns: 200px auto;
   grid-template-rows: 100vh auto;
@@ -64,8 +65,41 @@ main {
 }
 
 .star-list__item {
-  border: 1px solid black;
-  padding: 8px;
-  background: var(--grey);
+  display: flex;
+  flex-direction: column;
+  background: var(--charcoal);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.star-list__info {
+  padding: 16px 12px 40px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.star-list__sabre::before {
+  display: inline-block;
+  width: 32px;
+  border-top: 4px solid #5a5c5d;
+  border-bottom: 4px solid #5a5c5d;
   border-radius: 4px;
+  content: "";
+}
+
+.star-list__sabre::after {
+  display: inline-block;
+  position: relative;
+  left: 4px;
+  width: 8px;
+  border-top: 4px solid #5a5c5d;
+  border-bottom: 4px solid #5a5c5d;
+  border-radius: 100%;
+  content: "";
+}
+
+.star-list__itemText {
+  font-size: 1.2rem;
+  color: var(--white);
 }
