@@ -3,6 +3,7 @@ import { sortAlpabetically } from "../../src/utils";
 describe("rendering", () => {
   describe("network issues", () => {
     it("renders Error when people api endpoint returns 404", () => {
+      cy.on("uncaught:exception", () => false);
       cy.clock();
       cy.intercept("https://swapi.dev/api/people", { statusCode: 404 }).as(
         "apiCall"
@@ -17,7 +18,7 @@ describe("rendering", () => {
       cy.wait("@apiCall");
       cy.tick(5000);
 
-      cy.findByRole("main").findByTestId("error").should("exist");
+      cy.findByTestId("error").should("exist");
     });
   });
 

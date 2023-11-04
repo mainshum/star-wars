@@ -1,14 +1,21 @@
 import { sortAlpabetically } from "../utils";
 import { useQuery } from "react-query";
 import { z } from "zod";
+import { ErrorBoundary } from "react-error-boundary";
 
-function Error() {
-  return <div data-testid="error">Error</div>;
-}
+// we'd normally log it using an external service
+const logError = console.error;
 
-function Loader() {
-  return <div data-testid="loader">Loader</div>;
-}
+const ListErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+  <ErrorBoundary
+    onError={logError}
+    fallback={<div data-testid="error">Unexpected error occurred</div>}
+  >
+    {children}
+  </ErrorBoundary>
+);
+
+const Loader = () => <div data-testid="loader">Loader</div>;
 
 const CharactersListSchema = z.object({
   results: z.array(
@@ -47,7 +54,8 @@ function ListWrapper<T extends z.ZodSchema>({
     queryKey: [url],
   });
 
-  if (error) return <Error />;
+  if (error) throw new Error(`error calling ${url}`);
+
   if (isLoading) return <Loader />;
 
   return <>{children(data)}</>;
@@ -81,12 +89,14 @@ function Planets({ data }: { data: z.infer<typeof PlanetsListSchema> }) {
 
 export const List = {
   Characters: () => (
-    <ListWrapper
-      schema={CharactersListSchema}
-      url="https://swapi.dev/api/people"
-    >
-      {(data) => <Characters data={data} />}
-    </ListWrapper>
+    <ListErrorBoundary>
+      <ListWrapper
+        schema={CharactersListSchema}
+        url="https://swapi.dev/api/people"
+      >
+        {(data) => <Characters data={data} />}
+      </ListWrapper>
+    </ListErrorBoundary>
   ),
   Planets: () => (
     <ListWrapper schema={PlanetsListSchema} url="https://swapi.dev/api/planets">
