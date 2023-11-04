@@ -23,14 +23,11 @@ describe("rendering", () => {
   });
 
   describe("happy path", () => {
-    it("renders characters in alphabetical order", () => {
-      cy.intercept("https://swapi.dev/api/people", { fixture: "people.json" });
-      cy.visit("/");
-
+    const verifyAtLeast5ItemsInOrder = () => {
       const texts: string[] = [];
 
       cy.findAllByRole("listitem")
-        .should("have.length.above", 3)
+        .should("have.length.above", 5)
         .each(($el) => {
           cy.wrap($el)
             .invoke("text")
@@ -41,6 +38,28 @@ describe("rendering", () => {
             expect(txt).to.eq(texts[ind])
           );
         });
+    };
+
+    it("renders vehicles in alphabetical order", () => {
+      cy.intercept("https://swapi.dev/api/vehicles", {
+        fixture: "vehicles.json",
+      });
+      cy.visit("/vehicles");
+
+      verifyAtLeast5ItemsInOrder();
+    });
+    it("renders characters in alphabetical order", () => {
+      cy.intercept("https://swapi.dev/api/people", { fixture: "people.json" });
+      cy.visit("/");
+      verifyAtLeast5ItemsInOrder();
+    });
+
+    it("renders planets in alphabetical order", () => {
+      cy.intercept("https://swapi.dev/api/planets", {
+        fixture: "planets.json",
+      });
+      cy.visit("/planets");
+      verifyAtLeast5ItemsInOrder();
     });
   });
 });

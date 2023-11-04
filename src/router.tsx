@@ -4,4 +4,5 @@ export const Router = createRouter({
   Home: "/",
   Characters: "/characters",
   Vehicles: "/vehicles",
+  Planets: "/planets",
 });

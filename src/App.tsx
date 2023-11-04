@@ -7,7 +7,7 @@ function NotFound() {
 }
 
 export function App() {
-  const route = Router.useRoute(["Characters", "Home"]);
+  const route = Router.useRoute(["Characters", "Home", "Vehicles", "Planets"]);
 
   return (
     <>
@@ -17,10 +17,14 @@ export function App() {
           if (!route?.name) return <NotFound />;
 
           switch (route.name) {
-            case "Characters":
-              return <List.Characters />;
             case "Home":
               return <List.Characters />;
+            case "Characters":
+              return <List.Characters />;
+            case "Vehicles":
+              return <List.Vehicles />;
+            case "Planets":
+              return <List.Planets />;
           }
         })()}
       </main>
