@@ -1,4 +1,5 @@
 import { sortAlpabetically } from "../../src/utils";
+import { HTTP } from "../utils";
 
 describe("rendering", () => {
   describe("network issues", () => {
@@ -23,6 +24,11 @@ describe("rendering", () => {
   });
 
   describe("happy path", () => {
+    beforeEach(() => {
+      HTTP.useMockPlanets();
+      HTTP.useMockCharacters();
+      HTTP.useMockVehicles();
+    });
     const verifyAtLeast5ItemsInOrder = () => {
       const texts: string[] = [];
 
@@ -41,23 +47,16 @@ describe("rendering", () => {
     };
 
     it("renders vehicles in alphabetical order", () => {
-      cy.intercept("https://swapi.dev/api/vehicles", {
-        fixture: "vehicles.json",
-      });
       cy.visit("/vehicles");
 
       verifyAtLeast5ItemsInOrder();
     });
     it("renders characters in alphabetical order", () => {
-      cy.intercept("https://swapi.dev/api/people", { fixture: "people.json" });
       cy.visit("/");
       verifyAtLeast5ItemsInOrder();
     });
 
     it("renders planets in alphabetical order", () => {
-      cy.intercept("https://swapi.dev/api/planets", {
-        fixture: "planets.json",
-      });
       cy.visit("/planets");
       verifyAtLeast5ItemsInOrder();
     });

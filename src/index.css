@@ -1,6 +1,7 @@
 html {
   box-sizing: border-box;
   font-size: 16px;
+  font-family: Inter;
   --black: rgb(0, 0, 0);
   --charcoal: rgb(29, 30, 31);
   --white: rgb(248, 248, 248);
@@ -39,20 +40,49 @@ img {
 
 a {
   text-decoration: none;
+  cursor: pointer;
 }
 
 #root {
   background: var(--black);
   display: grid;
-  grid-template-columns: 200px auto;
+  grid-template-columns: min-content auto;
   grid-template-rows: 100vh auto;
 }
 
-nav {
+.navbar {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
+  gap: 16px;
   padding: 16px;
+  color: var(--white);
+}
+.navbar__link {
+  display: flex;
+  justify-content: center;
+  padding-left: 32px;
+  gap: 8px;
+}
+
+.death-star {
+  filter: invert();
+  position: absolute;
+  inset: 16px;
+  transition: transform 250ms ease-out 0ms;
+}
+
+.death-star.characters {
+  transform: translateY(0px);
+}
+
+.death-star.vehicles {
+  transform: translateY(34px);
+}
+
+.death-star.planets {
+  transform: translateY(68px);
 }
 
 main {
