@@ -47,11 +47,10 @@ a {
   background: var(--black);
   display: grid;
   grid-template-columns: min-content auto;
-  grid-template-rows: 100vh auto;
+  grid-template-rows: 100vh;
 }
 
 .navbar {
-  position: relative;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
