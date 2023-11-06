@@ -1,7 +1,7 @@
 import { useQuery, useQueries } from "react-query";
 import { getFromSwapi, getGenericJson } from "../utils";
 import { z } from "zod";
-import { Tile } from "./tile";
+import { Tile } from "./layout";
 
 const CharacterSchema = z.object({
   name: z.string(),

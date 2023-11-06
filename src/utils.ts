@@ -41,3 +41,11 @@ export const getGenericJson = async (url: string) => {
 
 export const getFromSwapi = async (relativeUrl: string) =>
   getGenericJson(`${API_ROOT}/${relativeUrl}`);
+
+export function* imageRotator(prefix: string, imagesNo: number) {
+  let ind = 0;
+  while (true) {
+    yield `${prefix}-${ind % imagesNo}.jpeg`;
+    ind += 1;
+  }
+}

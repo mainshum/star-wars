@@ -6,6 +6,8 @@ interface RootLiProps extends React.HTMLAttributes<HTMLLIElement> {
   rootElem?: "li" | "section";
 }
 
+const Sabre = () => <div className="sabre" />;
+
 // grey background and border, serves as anchor
 const RootLi = React.forwardRef<HTMLLIElement, RootLiProps>(
   ({ rootElem = "li", ...rest }, ref) => {
@@ -15,25 +17,10 @@ const RootLi = React.forwardRef<HTMLLIElement, RootLiProps>(
   }
 );
 
-interface TextWithSabreProps extends React.HTMLAttributes<HTMLDivElement> {
-  name: string;
-}
-
-const Sabre = () => <div className="sabre" />;
-
 const TileText = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
 >((props, ref) => <span className="tile-text" ref={ref} {...props} />);
-
-// sabre and text underneath
-const TextWithSabre = React.forwardRef<HTMLDivElement, TextWithSabreProps>(
-  ({ ...rest }, ref) => (
-    <section ref={ref} {...rest} className="text-with-sabre">
-      {/* <span className="text-with-sabre__text">{rest.name}</span> */}
-    </section>
-  )
-);
 
 const ImgSmall = React.forwardRef<
   HTMLImageElement,
@@ -46,6 +33,11 @@ const DetailItem = ({ title, value }: { title: string; value: string }) => (
     <div>{value}</div>
   </div>
 );
+
+export const StarList = React.forwardRef<
+  HTMLUListElement,
+  React.HTMLAttributes<HTMLUListElement>
+>((props, ref) => <ul ref={ref} className="star-list" {...props} />);
 
 export const Tile = {
   DetailItem,

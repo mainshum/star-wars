@@ -1,4 +1,4 @@
-import { sortAlpabetically } from "../../src/utils";
+import { imageRotator, sortAlpabetically } from "../../src/utils";
 
 describe("sortAlphabetically", () => {
   it("should put objects in array in asc order by name, not mutating original", () => {
@@ -11,5 +11,16 @@ describe("sortAlphabetically", () => {
     expect(sorted[2].x).to.eq("c");
 
     expect(objs[0].x).to.eq("b");
+  });
+});
+
+describe("imageRotator", () => {
+  it("should return 3 rotated prefixes", () => {
+    const rotate = imageRotator("img", 3);
+
+    expect(rotate.next().value).to.eq("img-0.jpeg");
+    expect(rotate.next().value).to.eq("img-1.jpeg");
+    expect(rotate.next().value).to.eq("img-2.jpeg");
+    expect(rotate.next().value).to.eq("img-0.jpeg");
   });
 });

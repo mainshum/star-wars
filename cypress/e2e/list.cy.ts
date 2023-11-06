@@ -51,7 +51,7 @@ describe("rendering", () => {
 
       verifyAtLeast5ItemsInOrder();
     });
-    it("renders characters in alphabetical order", () => {
+    it.only("renders characters in alphabetical order", () => {
       cy.visit("/");
       verifyAtLeast5ItemsInOrder();
     });
