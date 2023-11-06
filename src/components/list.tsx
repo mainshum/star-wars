@@ -1,23 +1,11 @@
-import { sortAlpabetically } from "../utils";
-import { useQuery } from "react-query";
+import { pipe, sortAlpabetically } from "../utils";
 import { z } from "zod";
-import { ErrorBoundary } from "react-error-boundary";
+import { Tile } from "./tile";
+import { Router } from "../router";
+import { JSONDataProvider } from "./data-provider";
 import React from "react";
-import { useLinkProps } from "@swan-io/chicane";
 
-// we'd normally log it using an external service
-const logError = console.error;
-
-const ListErrorBoundary = ({ children }: { children: React.ReactNode }) => (
-  <ErrorBoundary
-    onError={logError}
-    fallback={<div data-testid="error">Unexpected error occurred</div>}
-  >
-    {children}
-  </ErrorBoundary>
-);
-
-const Loader = () => <div data-testid="loader">Loader</div>;
+const pickName = <T extends { name: string }>(t: T) => t.name;
 
 const ListResultsSchema = z.object({
   results: z.array(
@@ -27,100 +15,100 @@ const ListResultsSchema = z.object({
   ),
 });
 
-const getJsonList = async (url: string) => {
-  const res = await fetch(url);
-  if (res.status !== 200) throw Error();
+const StarList = React.forwardRef<
+  HTMLUListElement,
+  React.HTMLAttributes<HTMLUListElement>
+>((props, ref) => <ul ref={ref} className="star-list" {...props} />);
 
-  return await res.json();
-};
-
-const ListWrapper = <T extends z.ZodSchema, W>({
-  schema,
-  url,
-  processList,
-  renderItem,
-}: {
-  schema: T;
-  url: string;
-  processList: (res: z.infer<T>) => W[];
-  renderItem: (data: W) => React.ReactNode;
-}) => {
-  const { data, error, isLoading } = useQuery({
-    queryFn: () => getJsonList(url).then(schema.parse).then(processList),
-    queryKey: [url],
-  });
-
-  // rethrow error synchronously
-  if (error) throw new Error(`error calling ${url}`);
-
-  if (isLoading) return <Loader />;
-
-  return <ul className="star-list">{data?.map(renderItem)}</ul>;
-};
-
-const CharacterLink = ({
-  name,
-  to,
-  img,
-}: {
-  name: string;
-  to: string;
-  img: string;
-}) => {
-  const { onClick } = useLinkProps({ href: to });
-  return (
-    <a href={to} onClick={onClick}>
-      <li className="star-list__item" key={name}>
-        <img alt={name} src={img} width={300} height={300} />
-        <section className="star-list__info">
-          <div className="star-list__sabre" />
-          <span className="star-list__itemText">{name}</span>
-        </section>
-      </li>
-    </a>
-  );
-};
-
-const pickName = <T extends { name: string }>(t: T) => t.name;
-
-// there is no difference in data rendering, but if we want it
-// changes can be introduced here
+// ids that are used to identify objects are their indices in the array +1
+const addHrefProperty = <T extends Record<string, any>>(
+  obj: T,
+  href: string
+) => ({ ...obj, href });
 
 export const List = {
   Characters: () => (
-    <ListErrorBoundary>
-      <ListWrapper
-        schema={ListResultsSchema}
-        url="https://swapi.dev/api/people"
-        processList={(res) => sortAlpabetically(res.results, pickName)}
-        renderItem={({ name }) => (
-          <CharacterLink name={name} img={"/character.jpeg"} to="" />
-        )}
-      />
-    </ListErrorBoundary>
+    <JSONDataProvider
+      schema={ListResultsSchema}
+      url="/people"
+      queryKey={["people"]}
+      selectResults={(res) =>
+        pipe(
+          res.results,
+          (xs) =>
+            xs.map((x, ind) =>
+              addHrefProperty(x, Router.Character({ id: (ind + 1).toString() }))
+            ),
+          (xs) => sortAlpabetically(xs, pickName)
+        )
+      }
+    >
+      {(data) => (
+        <StarList>
+          {data?.map((d) => (
+            <Tile.Root href={d.href}>
+              <Tile.ImgSmall src="/character.jpeg" />
+              <Tile.TextWithSabre name={d.name} />
+            </Tile.Root>
+          ))}
+        </StarList>
+      )}
+    </JSONDataProvider>
   ),
   Planets: () => (
-    <ListErrorBoundary>
-      <ListWrapper
-        schema={ListResultsSchema}
-        url="https://swapi.dev/api/planets"
-        processList={(res) => sortAlpabetically(res.results, pickName)}
-        renderItem={({ name }) => (
-          <CharacterLink name={name} img="/aeos.jpeg" to="" />
-        )}
-      />
-    </ListErrorBoundary>
+    <JSONDataProvider
+      schema={ListResultsSchema}
+      url="/planets"
+      queryKey={["planets"]}
+      selectResults={(res) =>
+        pipe(
+          res.results,
+          (xs) =>
+            xs.map((x, ind) =>
+              addHrefProperty(x, Router.Planet({ id: (ind + 1).toString() }))
+            ),
+          (xs) => sortAlpabetically(xs, pickName)
+        )
+      }
+    >
+      {(data) => (
+        <StarList>
+          {data?.map((d) => (
+            <Tile.Root href={d.href}>
+              <Tile.ImgSmall src="/aeos.jpeg" />
+              <Tile.TextWithSabre name={d.name} />
+            </Tile.Root>
+          ))}
+        </StarList>
+      )}
+    </JSONDataProvider>
   ),
   Vehicles: () => (
-    <ListErrorBoundary>
-      <ListWrapper
-        schema={ListResultsSchema}
-        url="https://swapi.dev/api/vehicles"
-        processList={(res) => sortAlpabetically(res.results, pickName)}
-        renderItem={({ name }) => (
-          <CharacterLink name={name} img="/fighter.jpeg" to="" />
-        )}
-      />
-    </ListErrorBoundary>
+    <JSONDataProvider
+      schema={ListResultsSchema}
+      url="/vehicles"
+      queryKey={["vehicles"]}
+      selectResults={(res) =>
+        pipe(
+          res.results,
+          (xs) =>
+            xs.map((x, ind) =>
+              addHrefProperty(x, Router.Vehicle({ id: (ind + 1).toString() }))
+            ),
+          (xs) => sortAlpabetically(xs, pickName)
+        )
+      }
+    >
+      {(data) => (
+        <StarList>
+          {data?.map((d) => (
+            <Tile.Root href={d.href}>
+              <Tile.ImgSmall src="/fighter.jpeg" />
+              <Tile.TextWithSabre name={d.name} />
+            </Tile.Root>
+          ))}
+        </StarList>
+      )}
+    </JSONDataProvider>
   ),
 };

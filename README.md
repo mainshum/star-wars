@@ -8,6 +8,8 @@
 
 - React (rendering)
 - Vite (build tool)
-- shadcn/ui (styling)
-- vitest (testing)
+- css (styling)
+- cypress (testing e2e and unit)
 - @swan-io/chicane (routing)
+
+[ ] dodac
