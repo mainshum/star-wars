@@ -46,10 +46,13 @@ export const List = {
       {(data) => (
         <StarList>
           {data?.map((d) => (
-            <Tile.Root href={d.href}>
-              <Tile.ImgSmall src="/character.jpeg" />
-              <Tile.TextWithSabre name={d.name} />
-            </Tile.Root>
+            <a href={d.href}>
+              <Tile.RootLi>
+                <Tile.ImgSmall src="/character.jpeg" />
+                <Tile.Sabre />
+                <Tile.TileText>{d.name}</Tile.TileText>
+              </Tile.RootLi>
+            </a>
           ))}
         </StarList>
       )}
@@ -74,10 +77,11 @@ export const List = {
       {(data) => (
         <StarList>
           {data?.map((d) => (
-            <Tile.Root href={d.href}>
+            <Tile.RootLi href={d.href}>
               <Tile.ImgSmall src="/aeos.jpeg" />
-              <Tile.TextWithSabre name={d.name} />
-            </Tile.Root>
+              <Tile.Sabre />
+              <Tile.TileText>{d.name}</Tile.TileText>
+            </Tile.RootLi>
           ))}
         </StarList>
       )}
@@ -102,10 +106,11 @@ export const List = {
       {(data) => (
         <StarList>
           {data?.map((d) => (
-            <Tile.Root href={d.href}>
+            <Tile.RootLi href={d.href}>
               <Tile.ImgSmall src="/fighter.jpeg" />
-              <Tile.TextWithSabre name={d.name} />
-            </Tile.Root>
+              <Tile.Sabre />
+              <Tile.TileText>{d.name}</Tile.TileText>
+            </Tile.RootLi>
           ))}
         </StarList>
       )}

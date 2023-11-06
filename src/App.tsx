@@ -1,7 +1,7 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { List } from "./components/list";
 import { Navbar } from "./components/navbar";
-import { Tile } from "./components/tile";
+import { Details } from "./components/details";
 import { Router as Router } from "./router";
 
 function NotFound() {
@@ -50,7 +50,7 @@ export function App() {
               case "Planets":
                 return <List.Planets />;
               case "Character":
-                return <Tile.Character id={route.params.id} />;
+                return <Details.Character id={route.params.id} />;
             }
           })()}
         </GenericErrorBoundary>

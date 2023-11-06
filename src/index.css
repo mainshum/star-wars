@@ -105,6 +105,7 @@ main {
 .tile-root {
   background: var(--charcoal);
   border-radius: 8px;
+  padding: 16px;
 }
 
 .center-flex {
@@ -124,14 +125,11 @@ main {
   flex-direction: column;
 }
 
-.text-with-sabre {
-  padding: 16px 12px 40px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.sabre {
+  padding-bottom: 16px;
 }
 
-.text-with-sabre__sabre::before {
+.sabre::before {
   display: inline-block;
   width: 32px;
   border-top: 4px solid #5a5c5d;
@@ -140,7 +138,7 @@ main {
   content: "";
 }
 
-.text-with-sabre__sabre::after {
+.sabre::after {
   display: inline-block;
   position: relative;
   left: 4px;
@@ -151,7 +149,7 @@ main {
   content: "";
 }
 
-.text-with-sabre__text {
+.tile-text {
   font-size: 1.2rem;
   color: var(--white);
 }

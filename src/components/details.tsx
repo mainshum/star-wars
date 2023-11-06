@@ -21,6 +21,19 @@ const HomeworldSchema = z.object({
 
 const NameSchema = z.object({ name: z.string() });
 
+const DetailsSection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <section>
+    <h1>{title}</h1>
+    {children}
+  </section>
+);
+
 const Character = ({ id }: { id: string }) => {
   const character = useQuery({
     queryFn: () => getFromSwapi(`/people/${id}`).then(CharacterSchema.parse),
@@ -45,26 +58,79 @@ const Character = ({ id }: { id: string }) => {
   );
 
   return (
-    <section className="center-flex">
-      <h1>Character details</h1>
-      {!character.data ? (
-        <Tile.Skeleton />
-      ) : (
-        <Tile.DetailSection>
-          <Tile.DetailItem title="Name" value={character.data.name} />
-          <Tile.DetailItem title="Gender" value={character.data.gender} />
-        </Tile.DetailSection>
-      )}
-      <Tile.DetailSection>
-        {vehicles.map(({ data }, ind) =>
-          !data ? (
-            <Tile.Skeleton key={ind} />
-          ) : (
-            <Tile.DetailItem title="Name" value={data.name} />
-          )
-        )}
-      </Tile.DetailSection>
-      <div className="details-tile__details"></div>
-    </section>
+    <div>
+      <DetailsSection title="Basic information">
+        <ul style={{ display: "flex", gap: "16px" }}>
+          <Tile.RootLi>
+            {!character.data?.name ? (
+              <Tile.Skeleton />
+            ) : (
+              <>
+                <Tile.Sabre />
+                <Tile.TileText>Name:</Tile.TileText>
+                <Tile.TileText>{character.data.name}</Tile.TileText>
+              </>
+            )}
+          </Tile.RootLi>
+          <Tile.RootLi>
+            {!character.data?.gender ? (
+              <Tile.Skeleton />
+            ) : (
+              <>
+                <Tile.Sabre />
+                <Tile.TileText>Gender:</Tile.TileText>
+                <Tile.TileText>{character.data.gender}</Tile.TileText>
+              </>
+            )}
+          </Tile.RootLi>
+        </ul>
+      </DetailsSection>
+      <DetailsSection title="Homeworld data">
+        <ul style={{ display: "flex", gap: "16px" }}>
+          <Tile.RootLi>
+            {!homeworld.data ? (
+              <Tile.Skeleton />
+            ) : (
+              <>
+                <Tile.Sabre />
+                <Tile.TileText>Name:</Tile.TileText>
+                <Tile.TileText>{homeworld.data.name}</Tile.TileText>
+              </>
+            )}
+          </Tile.RootLi>
+          <Tile.RootLi>
+            {!homeworld.data ? (
+              <Tile.Skeleton />
+            ) : (
+              <>
+                <Tile.Sabre />
+                <Tile.TileText>Period:</Tile.TileText>
+                <Tile.TileText>{homeworld.data.orbital_period}</Tile.TileText>
+              </>
+            )}
+          </Tile.RootLi>
+        </ul>
+      </DetailsSection>
+      <DetailsSection title="Vehicles">
+        <ul style={{ display: "flex", gap: "16px" }}>
+          {vehicles.map((v) => (
+            <Tile.RootLi>
+              {!v.data ? (
+                <Tile.Skeleton />
+              ) : (
+                <>
+                  <Tile.Sabre />
+                  <Tile.TileText>{v.data.name}</Tile.TileText>
+                </>
+              )}
+            </Tile.RootLi>
+          ))}
+        </ul>
+      </DetailsSection>
+    </div>
   );
+};
+
+export const Details = {
+  Character,
 };

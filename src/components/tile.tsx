@@ -3,21 +3,27 @@ import React from "react";
 export const Skeleton = () => <div>Loading</div>;
 
 // grey background and border, serves as anchor
-const Root = React.forwardRef<
-  HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement>
->((rest, ref) => <a ref={ref} className="tile-root" {...rest} />);
+const RootLi = React.forwardRef<
+  HTMLLIElement,
+  React.AnchorHTMLAttributes<HTMLLIElement>
+>((rest, ref) => <li ref={ref} className="tile-root" {...rest} />);
 
 interface TextWithSabreProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string;
 }
 
+const Sabre = () => <div className="sabre" />;
+
+const TileText = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>((props, ref) => <span className="tile-text" ref={ref} {...props} />);
+
 // sabre and text underneath
 const TextWithSabre = React.forwardRef<HTMLDivElement, TextWithSabreProps>(
   ({ ...rest }, ref) => (
     <section ref={ref} {...rest} className="text-with-sabre">
-      <div className="text-with-sabre__sabre" />
-      <span className="text-with-sabre__text">{rest.name}</span>
+      {/* <span className="text-with-sabre__text">{rest.name}</span> */}
     </section>
   )
 );
@@ -36,8 +42,9 @@ const DetailItem = ({ title, value }: { title: string; value: string }) => (
 
 export const Tile = {
   DetailItem,
-  TextWithSabre,
+  Sabre,
+  TileText,
   ImgSmall,
-  Root,
+  RootLi,
   Skeleton,
 };
