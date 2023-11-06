@@ -2,11 +2,18 @@ import React from "react";
 
 export const Skeleton = () => <div>Loading</div>;
 
+interface RootLiProps extends React.HTMLAttributes<HTMLLIElement> {
+  rootElem?: "li" | "section";
+}
+
 // grey background and border, serves as anchor
-const RootLi = React.forwardRef<
-  HTMLLIElement,
-  React.AnchorHTMLAttributes<HTMLLIElement>
->((rest, ref) => <li ref={ref} className="tile-root" {...rest} />);
+const RootLi = React.forwardRef<HTMLLIElement, RootLiProps>(
+  ({ rootElem = "li", ...rest }, ref) => {
+    const El = rootElem;
+
+    return <El ref={ref} className="tile-root" {...rest} />;
+  }
+);
 
 interface TextWithSabreProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string;

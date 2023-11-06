@@ -89,7 +89,8 @@ a {
 }
 
 main {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 16px;
 }
 
@@ -99,7 +100,6 @@ main {
   gap: 16px;
   justify-content: space-evenly;
   height: 100%;
-  overflow-x: auto;
 }
 
 .tile-root {

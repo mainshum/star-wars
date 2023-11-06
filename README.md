@@ -12,4 +12,10 @@
 - cypress (testing e2e and unit)
 - @swan-io/chicane (routing)
 
-[ ] dodac
+[ ] font inter
+[ ] img + sabre + text
+[ ] img + sabre + prop name + text
+[ ] nice loader
+[ ] autoanimate
+[ ] random image selector (5 per category)
+[ ] fix navbar (use icons instead)
