@@ -3,7 +3,6 @@ import { z } from "zod";
 import { Tile, StarList } from "./layout";
 import { Router } from "../router";
 import { JSONDataProvider } from "./data-provider";
-import React from "react";
 
 const pickName = <T extends { name: string }>(t: T) => t.name;
 
@@ -36,7 +35,7 @@ const Galery = <T extends { name: string; href: string }>({
       {elements?.map((d) => (
         <Tile.RootLi key={d.name}>
           <a href={d.href}>
-            <Tile.ImgSmall src={rotate.next().value!} />
+            <Tile.ImgSmall alt={d.name} src={rotate.next().value!} />
             <Tile.Sabre />
             <Tile.TileText>{d.name}</Tile.TileText>
           </a>
@@ -82,17 +81,7 @@ export const List = {
         )
       }
     >
-      {(data) => (
-        <StarList>
-          {data?.map((d) => (
-            <Tile.RootLi>
-              <Tile.ImgSmall src="/aeos.jpeg" />
-              <Tile.Sabre />
-              <Tile.TileText>{d.name}</Tile.TileText>
-            </Tile.RootLi>
-          ))}
-        </StarList>
-      )}
+      {(data) => <Galery elements={data} imgNo={6} imgPrefix="/images/ps" />}
     </JSONDataProvider>
   ),
   Vehicles: () => (
@@ -111,17 +100,7 @@ export const List = {
         )
       }
     >
-      {(data) => (
-        <StarList>
-          {data?.map((d) => (
-            <Tile.RootLi>
-              <Tile.ImgSmall src="/fighter.jpeg" />
-              <Tile.Sabre />
-              <Tile.TileText>{d.name}</Tile.TileText>
-            </Tile.RootLi>
-          ))}
-        </StarList>
-      )}
+      {(data) => <Galery elements={data} imgNo={4} imgPrefix="/images/vhs" />}
     </JSONDataProvider>
   ),
 };
