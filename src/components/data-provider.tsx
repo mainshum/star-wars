@@ -2,11 +2,10 @@ import { withErrorBoundary } from "react-error-boundary";
 import { useQuery } from "react-query";
 import { z } from "zod";
 import { getFromSwapi } from "../utils";
+import { Loader } from "./loader";
 
 // we'd normally log it using an external service
 const logError = console.error;
-
-const Loader = () => <div data-testid="loader">Loader</div>;
 
 const DataProvider = <T extends z.ZodSchema, W>({
   schema,

@@ -2,6 +2,7 @@ import { useQuery, useQueries } from "react-query";
 import { getFromSwapi, getGenericJson } from "../utils";
 import { z } from "zod";
 import { Tile } from "./layout";
+import { Loader } from "./loader";
 
 const CharacterSchema = z.object({
   name: z.string(),
@@ -59,11 +60,30 @@ const Character = ({ id }: { id: string }) => {
 
   return (
     <div>
-      <DetailsSection title="Basic information">
+      <Tile.RootLi rootElem="section" className="details-tile">
+        <Tile.ImgLarge src="/images/char-1.jpeg" />
+        <div className="details-tile__list">
+          <div className="details-tile__listelem">
+            <Tile.TileText>Name</Tile.TileText>
+            <Tile.TileText>{character.data?.name}</Tile.TileText>
+          </div>
+          <Tile.Divider />
+          <div className="details-tile__listelem">
+            <Tile.TileText>Gender</Tile.TileText>
+            <Tile.TileText>{character.data?.gender}</Tile.TileText>
+          </div>
+          <Tile.Divider />
+          <div className="details-tile__listelem">
+            <Tile.TileText>Homeworld</Tile.TileText>
+            <Tile.TileText>{homeworld.data?.name}</Tile.TileText>
+          </div>
+        </div>
+      </Tile.RootLi>
+      {/* <DetailsSection title="Basic information">
         <ul style={{ display: "flex", gap: "16px" }}>
           <Tile.RootLi>
             {!character.data?.name ? (
-              <Tile.Skeleton />
+              <Loader />
             ) : (
               <>
                 <Tile.Sabre />
@@ -74,7 +94,7 @@ const Character = ({ id }: { id: string }) => {
           </Tile.RootLi>
           <Tile.RootLi>
             {!character.data?.gender ? (
-              <Tile.Skeleton />
+              <Loader />
             ) : (
               <>
                 <Tile.Sabre />
@@ -84,12 +104,12 @@ const Character = ({ id }: { id: string }) => {
             )}
           </Tile.RootLi>
         </ul>
-      </DetailsSection>
-      <DetailsSection title="Homeworld data">
+      </DetailsSection> */}
+      {/* <DetailsSection title="Homeworld data">
         <ul style={{ display: "flex", gap: "16px" }}>
           <Tile.RootLi>
             {!homeworld.data ? (
-              <Tile.Skeleton />
+              <Loader />
             ) : (
               <>
                 <Tile.Sabre />
@@ -100,7 +120,7 @@ const Character = ({ id }: { id: string }) => {
           </Tile.RootLi>
           <Tile.RootLi>
             {!homeworld.data ? (
-              <Tile.Skeleton />
+              <Loader />
             ) : (
               <>
                 <Tile.Sabre />
@@ -116,7 +136,7 @@ const Character = ({ id }: { id: string }) => {
           {vehicles.map((v) => (
             <Tile.RootLi>
               {!v.data ? (
-                <Tile.Skeleton />
+                <Loader />
               ) : (
                 <>
                   <Tile.Sabre />
@@ -126,7 +146,7 @@ const Character = ({ id }: { id: string }) => {
             </Tile.RootLi>
           ))}
         </ul>
-      </DetailsSection>
+      </DetailsSection> */}
     </div>
   );
 };
