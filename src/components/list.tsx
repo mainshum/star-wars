@@ -3,6 +3,8 @@ import { z } from "zod";
 import { Tile, StarList } from "./layout";
 import { Router } from "../router";
 import { JSONDataProvider } from "./data-provider";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useEffect, useState } from "react";
 
 const pickName = <T extends { name: string }>(t: T) => t.name;
 
@@ -30,9 +32,23 @@ const Galery = <T extends { name: string; href: string }>({
   imgNo: number;
 }) => {
   const rotate = imageRotator(imgPrefix, imgNo);
+  const [itemsWrapped, setItemsWrapped] = useState<T[]>([]);
+  const [parent] = useAutoAnimate();
+
+  useEffect(() => {
+    if (!elements) {
+      setItemsWrapped([]);
+      return;
+    }
+
+    const id = setTimeout(() => setItemsWrapped(elements), 0);
+
+    return () => clearTimeout(id);
+  }, [elements]);
+
   return (
-    <StarList>
-      {elements?.map((d) => (
+    <StarList ref={parent}>
+      {itemsWrapped.map((d) => (
         <Tile.RootLi key={d.name}>
           <a href={d.href}>
             <Tile.ImgSmall alt={d.name} src={rotate.next().value!} />

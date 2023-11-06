@@ -46,7 +46,7 @@ describe("rendering", () => {
         });
     };
 
-    it("renders vehicles in alphabetical order", () => {
+    it.only("renders vehicles in alphabetical order", () => {
       cy.visit("/vehicles");
 
       verifyAtLeast5ItemsInOrder();

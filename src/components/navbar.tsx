@@ -22,6 +22,7 @@ export function Navbar() {
   const vhs = useLinkProps({ href: Router.Vehicles() });
   const planets = useLinkProps({ href: Router.Planets() });
 
+  // TODO fix this
   const deathStarActiveClassName = chars.active
     ? "characters"
     : vhs.active
