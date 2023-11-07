@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { z } from "zod";
 
-const API_ROOT = "https://swapi.dev/api";
+export const API_ROOT = "https://swapi.dev/api";
 
 export function sortAlpabetically<T, X extends string>(
   xs: T[],
@@ -65,4 +66,17 @@ export const useDelayedElements = <T>(elements: T[] | undefined) => {
   }, [elements]);
 
   return { items, ref };
+};
+
+export function isSome<T>(x: T | undefined | null): x is T {
+  return x != null;
+}
+
+export const matchDigits = (url: string) => /\d+/.exec(url)?.[0];
+
+export const tap = <T>(fn: (t: T) => void) => {
+  return (t: T) => {
+    fn(t);
+    return t;
+  };
 };

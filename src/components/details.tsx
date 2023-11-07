@@ -1,4 +1,4 @@
-import { useQuery, useQueries } from "react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import { getFromSwapi, getGenericJson } from "../utils";
 import { z } from "zod";
 import { Tile } from "./layout";
@@ -10,14 +10,6 @@ const CharacterSchema = z.object({
   vehicles: z.array(z.string()),
   // assuming gender = race :)
   gender: z.string(),
-});
-
-const HomeworldSchema = z.object({
-  name: z.string(),
-  rotation_period: z.number({ coerce: true }),
-  orbital_period: z.number({ coerce: true }),
-  climate: z.string(),
-  terrain: z.string(),
 });
 
 const NameSchema = z.object({ name: z.string() });

@@ -28,9 +28,9 @@ export function App() {
     "Vehicles",
     "Planets",
     "Character",
+    "Vehicle",
+    "Planet",
   ]);
-
-  console.log(route);
 
   return (
     <>
@@ -51,6 +51,10 @@ export function App() {
                 return <List.Planets />;
               case "Character":
                 return <Details.Character id={route.params.id} />;
+              case "Vehicle":
+                return <Details.Vehicle id={route.params.id} />;
+              case "Planet":
+                return <Details.Planet id={route.params.id} />;
             }
           })()}
         </GenericErrorBoundary>
