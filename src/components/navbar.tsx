@@ -1,12 +1,31 @@
 import { Router } from "@/src/router";
 import { useLinkProps } from "@swan-io/chicane";
+import { Car, Star, PersonStanding } from "lucide-react";
+import clsx from "clsx";
+import React from "react";
 
-type LinkProps = ReturnType<typeof useLinkProps> & { display: string };
+const icons = {
+  Car,
+  Star,
+  PersonStanding,
+} as const;
 
-const NavbarLink = ({ onClick, display }: LinkProps) => {
+type LinkProps = {
+  href: string;
+  icon: keyof typeof icons;
+};
+
+const NavbarLink = ({ href, icon }: LinkProps) => {
+  const { onClick, active } = useLinkProps({ href: href });
+
   return (
-    <a onClick={onClick} className="navbar__link">
-      <span>{display}</span>
+    <a onClick={onClick}>
+      {React.createElement(icons[icon], {
+        className: clsx(
+          "w-4 h-4 cursor-pointer",
+          active && "w-6 h-6 p-0.5 bg-slate-800 rounded"
+        ),
+      })}
     </a>
   );
 };
@@ -17,30 +36,12 @@ const linkDisplayMap = {
   [Router.Vehicles()]: "Vehicles",
 } as const;
 
-export function Navbar() {
-  const chars = useLinkProps({ href: Router.Characters() });
-  const vhs = useLinkProps({ href: Router.Vehicles() });
-  const planets = useLinkProps({ href: Router.Planets() });
-
-  // TODO fix this
-  const deathStarActiveClassName = chars.active
-    ? "characters"
-    : vhs.active
-    ? "vehicles"
-    : "planets";
-
+export const Navbar = () => {
   return (
-    <nav className="navbar">
-      <img
-        className={`death-star ${deathStarActiveClassName}`}
-        alt="death-star"
-        src="/death-star.svg"
-        width={16}
-        height={16}
-      />
-      <NavbarLink display={linkDisplayMap[Router.Characters()]} {...chars} />
-      <NavbarLink display={linkDisplayMap[Router.Vehicles()]} {...vhs} />
-      <NavbarLink display={linkDisplayMap[Router.Planets()]} {...planets} />
+    <nav className="flex flex-col justify-center items-center  gap-4">
+      <NavbarLink icon="PersonStanding" href={Router.Characters()} />
+      <NavbarLink icon="Car" href={Router.Vehicles()} />
+      <NavbarLink icon="Star" href={Router.Planets()} />
     </nav>
   );
-}
+};
