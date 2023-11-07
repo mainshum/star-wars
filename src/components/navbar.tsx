@@ -30,15 +30,9 @@ const NavbarLink = ({ href, icon }: LinkProps) => {
   );
 };
 
-const linkDisplayMap = {
-  [Router.Characters()]: "Characters",
-  [Router.Planets()]: "Planets",
-  [Router.Vehicles()]: "Vehicles",
-} as const;
-
 export const Navbar = () => {
   return (
-    <nav className="flex flex-col justify-center items-center  gap-4">
+    <nav className="flex flex-col justify-center items-center bg-zinc-900 gap-4">
       <NavbarLink icon="PersonStanding" href={Router.Characters()} />
       <NavbarLink icon="Car" href={Router.Vehicles()} />
       <NavbarLink icon="Star" href={Router.Planets()} />
