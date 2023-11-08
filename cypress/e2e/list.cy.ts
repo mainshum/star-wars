@@ -46,7 +46,7 @@ describe("rendering", () => {
         });
     };
 
-    it.only("renders vehicles in alphabetical order", () => {
+    it("renders vehicles in alphabetical order", () => {
       cy.visit("/vehicles");
 
       verifyAtLeast5ItemsInOrder();
@@ -56,7 +56,7 @@ describe("rendering", () => {
       verifyAtLeast5ItemsInOrder();
     });
 
-    it("renders planets in alphabetical order", () => {
+    it.only("renders planets in alphabetical order", () => {
       cy.visit("/planets");
       verifyAtLeast5ItemsInOrder();
     });

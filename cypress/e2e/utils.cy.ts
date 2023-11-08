@@ -1,4 +1,14 @@
+import {
+  API,
+  CharacterSchema,
+  PlanetSchema,
+  VehicleSchema,
+} from "../..//src/api";
+import Tat from "../fixtures/tatooine.json";
+import Luke from "../fixtures/luke.json";
+import SS from "../fixtures/snowspeeder.json";
 import { imageRotator, sortAlpabetically } from "../../src/utils";
+import { HTTP } from "../utils";
 
 describe("sortAlphabetically", () => {
   it("should put objects in array in asc order by name, not mutating original", () => {
@@ -22,5 +32,29 @@ describe("imageRotator", () => {
     expect(rotate.next().value).to.eq("img-1.jpeg");
     expect(rotate.next().value).to.eq("img-2.jpeg");
     expect(rotate.next().value).to.eq("img-0.jpeg");
+  });
+});
+
+describe("api", () => {
+  it("PlanetSchema should parsed resident urls into ids", () => {
+    const parsed = PlanetSchema.parse({ ...Tat, id: "1" });
+
+    expect(parsed.peopleIds.length).to.eq(10);
+    expect(parsed.peopleIds[0]).to.eq("1");
+    expect(parsed.peopleIds[parsed.peopleIds.length - 1]).to.eq("62");
+  });
+
+  it("Vehicle should parsed resident urls into ids", () => {
+    const parsed = VehicleSchema.parse({ ...SS, id: "1" });
+
+    expect(parsed.peopleIds.length).to.eq(2);
+    expect(parsed.peopleIds[0]).to.eq("1");
+    expect(parsed.peopleIds[parsed.peopleIds.length - 1]).to.eq("18");
+  });
+
+  it("Character homeworld id should be parsed", () => {
+    const parsed = CharacterSchema.parse({ ...Luke, id: "1" });
+
+    expect(parsed.planetId).to.eq("1");
   });
 });

@@ -1,26 +1,9 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
-import {
-  getFromSwapi,
-  getGenericJson,
-  imageRotator,
-  isSome,
-  matchDigits,
-  pipe,
-} from "../utils";
-import { z } from "zod";
+import { imageRotator, isSome } from "../utils";
 import { Polygon, LightSabre } from "@/src/components/design-system";
 import { Router } from "../router";
 import React, { useMemo } from "react";
-import { useLinkProps } from "@swan-io/chicane";
 import { API } from "../api";
-
-const HomeworldSchema = z.object({
-  name: z.string(),
-  residents: z.array(z.string()),
-  population: z.string(),
-  climate: z.string(),
-  terrain: z.string(),
-});
+import { Link } from "../components/link";
 
 const charGen = imageRotator("/images/char", 5);
 const planetGen = imageRotator("/images/ps", 6);
@@ -34,111 +17,15 @@ Empire’s reign changed the course of galactic history. Although she walked awa
 from the Jedi Order, she continued to stand up for those fighting for peace and
 justice in the galaxy long after the fall of the Republic.  `;
 
-const VehicleSchema = z.object({
-  name: z.string(),
-  model: z.string(),
-  pilots: z.array(z.string()),
-});
-
 type DetailsProps = {
   id: string;
-};
-
-const Spacer = () => <div className="w-[2px] bg-yellow-300 py-4" />;
-
-const useImage = (gen: Generator<string, void>, id: string) =>
-  useMemo(() => {
-    return gen.next().value!;
-  }, [id]);
-
-const Link = ({ to, children }: { to: string; children: React.ReactNode }) => {
-  const { onClick } = useLinkProps({ href: to });
-
-  return <a onClick={onClick}>{children}</a>;
-};
-
-const Planet = ({ id: pid }: DetailsProps) => {
-  const imgSrc = useImage(planetGen, pid);
-
-  const planet = API.getPlanet(pid);
-
-  const planetIds = planet.data?.residents.map(matchDigits).filter(isSome);
-
-  const residents = API.getResidents(planetIds || []).map((d) => d.data);
-
-  return (
-    <div className="flex flex-col gap-8">
-      <Tile>
-        <TileContent header={planet.data?.name} imageSrc={imgSrc} />
-      </Tile>
-      <section className="px-2 flex gap-8">
-        <Descriptor header="Residents">
-          {residents.filter(isSome).map(({ name, id }) => (
-            <Link key={name} to={Router.Character({ id })}>
-              <span>{name}</span>
-            </Link>
-          ))}
-        </Descriptor>
-        <Spacer />
-        <Descriptor header="Name">
-          <span>{planet.data?.name}</span>
-        </Descriptor>
-        <Spacer />
-        <Descriptor header="Population">
-          <span>{planet.data?.population}</span>
-        </Descriptor>
-        <Spacer />
-      </section>
-    </div>
-  );
-};
-
-const Vehicle = ({ id: vid }: DetailsProps) => {
-  const imgSrc = useImage(vehicleGen, vid);
-  const vehicle = useQuery({
-    queryFn: () => getFromSwapi(`/vehicles/${vid}`).then(VehicleSchema.parse),
-    queryKey: ["vehicle", vid],
-  });
-
-  const pilots = useQueriesAndParseIds(
-    "people",
-    vehicle.data?.pilots || [],
-    CharacterSchema
-  );
-
-  return (
-    <div className="flex flex-col gap-8">
-      <Tile>
-        <TileContent header={vehicle.data?.name} imageSrc={imgSrc} />
-      </Tile>
-      <section className="px-2 flex gap-8">
-        <Descriptor header="Used by">
-          {pilots
-            .map((d) => d.data)
-            .filter(isSome)
-            .map(({ name, id }) => (
-              <Link to={Router.Character({ id })}>
-                <span>{name}</span>
-              </Link>
-            ))}
-        </Descriptor>
-        <Spacer />
-        <Descriptor header="Name">
-          <span>{vehicle.data?.name}</span>
-        </Descriptor>
-        <Spacer />
-        <Descriptor header="Type">
-          <span>{vehicle.data?.model}</span>
-        </Descriptor>
-        <Spacer />
-      </section>
-    </div>
-  );
 };
 
 interface DescriptorProps extends React.HTMLAttributes<HTMLDivElement> {
   header: string;
 }
+
+const Spacer = () => <div className="w-[2px] bg-yellow-300 py-4" />;
 
 const Tile = ({ children }: { children: React.ReactNode }) => (
   <div className="rounded relative flex h-[310px] overflow-hidden bg-tile-root">
@@ -151,7 +38,9 @@ const Descriptor = React.forwardRef<HTMLDivElement, DescriptorProps>(
   ({ children, header }, ref) => (
     <div ref={ref} className="flex flex-col gap-2">
       <div className="text-xl">{header}</div>
-      <div className="flex flex-col font-light text-sm gap-1">{children}</div>
+      <div className="flex flex-col font-light text-sm gap-1">
+        {children ? children : <span>Dupa</span>}
+      </div>
     </div>
   )
 );
@@ -181,94 +70,133 @@ const TileContent = ({
   </>
 );
 
-const useQueriesAndParseIds = <T extends z.ZodSchema>(
-  queryKey: string,
-  urls: string[],
-  objectSchema: T
-) =>
-  useQueries({
-    queries: pipe(
-      urls.reduce((acc, url) => {
-        const id = matchDigits(url);
-        return !id ? acc : acc.concat({ id, url });
-      }, [] as { id: string; url: string }[]),
-      (vhs) =>
-        vhs.map(({ url, id }) => ({
-          queryKey: [queryKey, id],
-          queryFn: () =>
-            getGenericJson(url)
-              .then(objectSchema.parse)
-              .then((parsed) => ({ ...parsed, id })),
-        }))
-    ),
-  });
+const useImage = (gen: Generator<string, void>, id: string) =>
+  useMemo(() => {
+    return gen.next().value!;
+  }, [id]);
 
-const Character = ({ id: charId }: DetailsProps) => {
-  const imgSrc = useImage(charGen, charId);
+const Planet = ({ id: pid }: DetailsProps) => {
+  const imgSrc = useImage(planetGen, pid);
 
-  const character = useQuery({
-    queryFn: () =>
-      getFromSwapi(`/people/${charId}`).then(CharacterSchema.parse),
-    queryKey: ["people", charId],
-  });
+  const planet = API.getPlanet(pid);
 
-  const homeworldUrl = character.data?.homeworld;
-  const vehicleUrls = character.data?.vehicles;
+  const planetReturned = planet.data;
+  const peopleIds = planet.data?.peopleIds;
 
-  // it will only run when homeworldUrl defined
-  const homeworld = useQuery({
-    queryFn: () => {
-      // we would log these errors
-      if (!homeworldUrl) return Promise.reject();
-
-      const id = matchDigits(homeworldUrl);
-
-      if (!id) return Promise.reject();
-
-      return getGenericJson(homeworldUrl)
-        .then(HomeworldSchema.parse)
-        .then((json) => ({ ...json, id }));
-    },
-    queryKey: ["homeworld", homeworldUrl],
-    enabled: !!homeworldUrl,
-  });
-
-  const vehicles = useQueriesAndParseIds(
-    "vehicle",
-    vehicleUrls || [],
-    VehicleSchema
-  );
+  const people = API.getPeople(peopleIds || []);
 
   return (
     <div className="flex flex-col gap-8">
       <Tile>
-        <TileContent header={character.data?.name!} imageSrc={imgSrc} />
+        <TileContent header={planet.data?.name} imageSrc={imgSrc} />
       </Tile>
       <section className="px-2 flex gap-8">
-        <Descriptor header="Vehicles">
-          {vehicles
-            .map((d) => d.data)
-            .filter(isSome)
-            .map(({ name, id }) => (
-              <Link key={id} to={Router.Vehicle({ id: id })}>
-                <span>{name}</span>
-              </Link>
-            ))}
-        </Descriptor>
-        <Spacer />
-        <Descriptor header="Gender">
-          <span>{character.data?.gender}</span>
+        <Descriptor header="Residents">
+          {planetReturned && !people.pending && people.data.length === 0 && (
+            <span>Nobody</span>
+          )}
+          {people.data.filter(isSome).map(({ name, id }) => (
+            <Link key={id} to={Router.Character({ id })}>
+              <span>{name}</span>
+            </Link>
+          ))}
         </Descriptor>
         <Spacer />
         <Descriptor header="Name">
-          <span>{character.data?.name}</span>
+          <span>{planet.data?.name}</span>
+        </Descriptor>
+        <Spacer />
+        <Descriptor header="Population">
+          <span>{planet.data?.population}</span>
+        </Descriptor>
+        <Spacer />
+      </section>
+    </div>
+  );
+};
+
+const Vehicle = ({ id: vid }: DetailsProps) => {
+  const imgSrc = useImage(vehicleGen, vid);
+
+  const vehicle = API.getVehicle(vid);
+
+  const peopleIds = vehicle.data?.peopleIds;
+
+  const vehicleReturned = vehicle.data;
+
+  const pilots = API.getPeople(peopleIds || []);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <Tile>
+        <TileContent header={vehicle.data?.name} imageSrc={imgSrc} />
+      </Tile>
+      <section className="px-2 flex gap-8">
+        <Descriptor header="Used by">
+          {vehicleReturned && !pilots.pending && pilots.data.length === 0 && (
+            <span>Nobody</span>
+          )}
+          {pilots.data.filter(isSome).map(({ name, id }) => (
+            <Link key={id} to={Router.Character({ id })}>
+              <span>{name}</span>
+            </Link>
+          ))}
+        </Descriptor>
+        <Spacer />
+        <Descriptor header="Name">
+          <span>{vehicle.data?.name}</span>
+        </Descriptor>
+        <Spacer />
+        <Descriptor header="Type">
+          <span>{vehicle.data?.model}</span>
+        </Descriptor>
+        <Spacer />
+      </section>
+    </div>
+  );
+};
+
+const Character = ({ id: charId }: DetailsProps) => {
+  const imgSrc = useImage(charGen, charId);
+
+  const person = API.getPerson(charId);
+
+  const planet = API.getPlanet(person.data?.planetId || null);
+
+  const personReturned = person.data;
+
+  const vehicles = API.getVehicles(person.data?.vehicleIds || []);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <Tile>
+        <TileContent header={person.data?.name!} imageSrc={imgSrc} />
+      </Tile>
+      <section className="px-2 flex gap-8">
+        <Descriptor header="Vehicles">
+          {personReturned &&
+            !vehicles.pending &&
+            vehicles.data.length === 0 && <span>No vehicles</span>}
+          {vehicles.data.filter(isSome).map(({ name, id }) => (
+            <Link key={id} to={Router.Vehicle({ id: id })}>
+              <span>{name}</span>
+            </Link>
+          ))}
+        </Descriptor>
+        <Spacer />
+        <Descriptor header="Gender">
+          <span>{person.data?.gender}</span>
+        </Descriptor>
+        <Spacer />
+        <Descriptor header="Name">
+          <span>{person.data?.name}</span>
         </Descriptor>
         <Spacer />
         <Descriptor header="Homeworld">
-          {homeworld.data && (
-            <a href={Router.Planet({ id: homeworld.data?.id })}>
-              <span>{homeworld.data?.name}</span>
-            </a>
+          {planet.data && (
+            <Link to={Router.Planet({ id: planet.data.id })}>
+              <span>{planet.data.name}</span>
+            </Link>
           )}
         </Descriptor>
       </section>
