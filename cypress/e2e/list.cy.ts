@@ -3,7 +3,7 @@ import { HTTP } from "../utils";
 
 describe("rendering", () => {
   describe("network issues", () => {
-    it("renders Error when people api endpoint returns 404", () => {
+    it.only("renders Error when people api endpoint returns 404", () => {
       cy.on("uncaught:exception", () => false);
       cy.clock();
       cy.intercept("https://swapi.dev/api/people", { statusCode: 404 }).as(
@@ -12,6 +12,8 @@ describe("rendering", () => {
       cy.visit("/");
 
       // simulate time so that react-query runs its retries faster
+      cy.wait("@apiCall");
+      cy.tick(5000);
       cy.wait("@apiCall");
       cy.tick(5000);
       cy.wait("@apiCall");
@@ -56,7 +58,7 @@ describe("rendering", () => {
       verifyAtLeast5ItemsInOrder();
     });
 
-    it.only("renders planets in alphabetical order", () => {
+    it("renders planets in alphabetical order", () => {
       cy.visit("/planets");
       verifyAtLeast5ItemsInOrder();
     });

@@ -100,6 +100,7 @@ main {
 .star-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, 200px);
+  grid-template-rows: repeat(auto-fit, 250px);
   gap: 16px;
   justify-content: space-evenly;
   height: 100%;

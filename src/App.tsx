@@ -1,5 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary";
-import { List } from "./components/list";
+import { List } from "./pages/list";
 import { Navbar } from "./components/navbar";
 import { Router as Router } from "./router";
 import { Details } from "./pages/details";

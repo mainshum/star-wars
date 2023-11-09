@@ -61,23 +61,27 @@ const getList = <T extends z.ZodSchema>(
   queryKey: string[],
   elementKey: string,
   swapiUrl: string,
-  parser: T
-): UseQueryResult<T> => {
+  parser: (d: unknown) => z.infer<T>
+): UseQueryResult<z.infer<T>> => {
   const client = useQueryClient();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: queryKey,
     queryFn: () =>
       getFromSwapi(swapiUrl)
-        .then(parser.parse)
+        .then(parser)
         .then(
           tap((res) =>
-            res.results.map((obj: any, ind: number) =>
-              client.setQueryData([elementKey, ind], obj)
+            res.results.map((obj: z.infer<T>) =>
+              client.setQueryData([elementKey, obj.id], obj)
             )
           )
         ),
   });
+
+  if (query.error) throw query.error;
+
+  return query;
 };
 
 const getObj = <T extends z.ZodSchema>(
@@ -95,7 +99,7 @@ const getObj = <T extends z.ZodSchema>(
       ),
   });
 
-  if (query.error) throw new Error("Request error");
+  if (query.error) throw query.error;
 
   return query;
 };
@@ -132,30 +136,54 @@ const getObjs = <T extends z.ZodSchema>(
   });
 };
 
+const parseListInTwoPasses = <T extends z.ZodSchema>(
+  secondPassParser: T,
+  apiData: unknown
+) => {
+  // we need to append id (corresponding to index) to each piece in the list
+  const parsed = z.object({ results: z.array(z.any()) }).parse(apiData);
+
+  parsed.results.forEach((res, id) => {
+    res.id = (id + 1).toString();
+  });
+
+  return z.object({ results: z.array(secondPassParser) }).parse(parsed);
+};
+
+const PlanetSchemaList = z.object({ results: z.array(PlanetSchema) });
+const VehiclesSchemaList = z.object({ results: z.array(VehicleSchema) });
+const CharactersSchemaList = z.object({ results: z.array(CharacterSchema) });
+
 export const API = {
   // lists
   getPlanetsList: () => {
-    return getList(
+    return getList<typeof PlanetSchemaList>(
       [cacheKeys.planets],
       cacheKeys.planet,
       "/planets",
-      z.object({ results: z.array(PlanetSchema) })
+      (res) => {
+        return parseListInTwoPasses(PlanetSchema, res);
+      }
     );
   },
-  getResidentsList: () => {
-    return getList(
+  getPeopleList: () => {
+    return getList<typeof CharactersSchemaList>(
       [cacheKeys.people],
       cacheKeys.person,
       "/people",
-      z.object({ results: z.array(CharacterSchema) })
+      (res) => {
+        return parseListInTwoPasses(CharacterSchema, res);
+      }
     );
   },
   getVehiclesList: () => {
-    return getList(
+    return getList<typeof VehiclesSchemaList>(
       [cacheKeys.vehicles],
       cacheKeys.vehicle,
       "/vehicles",
-      z.object({ results: z.array(CharacterSchema) })
+      (res) => {
+        return parseListInTwoPasses(VehicleSchema, res);
+      }
     );
   },
   // details

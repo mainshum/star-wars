@@ -9,5 +9,9 @@ export const Link = ({
 }) => {
   const { onClick } = useLinkProps({ href: to });
 
-  return <a onClick={onClick}>{children}</a>;
+  return (
+    <a href={to} onClick={onClick}>
+      {children}
+    </a>
+  );
 };

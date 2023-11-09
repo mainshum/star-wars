@@ -7,22 +7,22 @@ describe("navbar navigation", () => {
     HTTP.useMockVehicles();
   });
 
-  const checkLink = (shouldPointTo: string, linkDisplay: string) => {
+  const checkLink = (linkIndex: number, linkContains: string) => {
     cy.visit("/");
-    cy.findByRole("navigation").findByText(linkDisplay).click();
+    cy.findByRole("navigation").findAllByRole("link").eq(linkIndex).click();
 
-    cy.url().should("contain", shouldPointTo);
+    cy.url().should("contain", linkContains);
   };
 
   it("characters link should point to /characters", () => {
-    checkLink("/characters", "Characters");
+    checkLink(0, "/characters");
   });
 
   it("vehicles link should point to /vehicles", () => {
-    checkLink("/vehicles", "Vehicles");
+    checkLink(1, "/vehicles");
   });
 
-  it("planets link should point to /vehicles", () => {
-    checkLink("/planets", "Planets");
+  it("planets link should point to /planets", () => {
+    checkLink(2, "/planets");
   });
 });

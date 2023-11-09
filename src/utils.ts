@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { z } from "zod";
 
 export const API_ROOT = "https://swapi.dev/api";
 
@@ -53,20 +51,6 @@ export function* imageRotator(prefix: string, imagesNo: number) {
     ind += 1;
   }
 }
-
-export const useDelayedElements = <T>(elements: T[] | undefined) => {
-  const [items, setItemsWrapped] = useState<T[] | undefined>([]);
-
-  const [ref] = useAutoAnimate();
-
-  useEffect(() => {
-    const id = setTimeout(() => setItemsWrapped(elements), 0);
-
-    return () => clearTimeout(id);
-  }, [elements]);
-
-  return { items, ref };
-};
 
 export function isSome<T>(x: T | undefined | null): x is T {
   return x != null;
