@@ -19,7 +19,7 @@ const RootLi = React.forwardRef<HTMLLIElement, RootLiProps>(
 const TileText = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
->((props, ref) => <span className="tile-text" ref={ref} {...props} />);
+>((props, ref) => <span className="text-lg text-white" ref={ref} {...props} />);
 
 const ImgSmall = React.forwardRef<
   HTMLImageElement,
@@ -27,7 +27,7 @@ const ImgSmall = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <img
     ref={ref}
-    className={clsx("img-small", className)}
+    className={clsx("w-[170px] h-[100px]", className)}
     {...props}
     width={170}
     height={100}
