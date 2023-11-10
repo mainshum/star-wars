@@ -14,8 +14,8 @@ describe("navbar navigation", () => {
     cy.url().should("contain", linkContains);
   };
 
-  it("characters link should point to /characters", () => {
-    checkLink(0, "/characters");
+  it("characters link should point to /", () => {
+    checkLink(0, "/");
   });
 
   it("vehicles link should point to /vehicles", () => {
